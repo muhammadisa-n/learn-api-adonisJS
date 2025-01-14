@@ -4,9 +4,6 @@ import { createContact, updateContact } from '#validators/contact'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class ContactsController {
-  /**
-   * Display a list of resource
-   */
   async index({ response, auth }: HttpContext) {
     const userId = Number(auth.user?.id)
     const contacts = await Contact.findManyBy('user_id', userId)
