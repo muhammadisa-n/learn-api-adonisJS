@@ -10,6 +10,7 @@
 const UsersController = () => import('#controllers/users_controller')
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
+const ContactsController = () => import('#controllers/contacts_controller')
 
 router.get('/', async () => {
   return {
@@ -24,7 +25,8 @@ router
     router
       .group(() => {
         router.post('auth/logout', [UsersController, 'logout'])
-        router.get('users/current', [UsersController, 'get'])
+        router.get('auth/users/current', [UsersController, 'get'])
+        router.resource('/contacts', ContactsController).except(['edit', 'create'])
       })
       .use(middleware.auth({ guards: ['api'] }))
   })

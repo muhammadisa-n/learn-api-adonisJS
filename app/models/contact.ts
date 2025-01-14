@@ -14,6 +14,8 @@ export default class Contact extends BaseModel {
   declare noHp: string
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
+  @column()
+  declare userId: number | null
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime
