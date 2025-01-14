@@ -1,4 +1,5 @@
 import Contact from '#models/contact'
+import { ResponseService } from '#services/response_service'
 import { createContact, updateContact } from '#validators/contact'
 import type { HttpContext } from '@adonisjs/core/http'
 
@@ -10,15 +11,9 @@ export default class ContactsController {
     const userId = Number(auth.user?.id)
     const contacts = await Contact.findManyBy('user_id', userId)
     if (!contacts) {
-      response.notFound({
-        message: 'Contact Not Found',
-        data: null,
-      })
+      return ResponseService.notFound(response, 'Contact Not Found')
     }
-    return response.ok({
-      message: 'Get All Contact Success',
-      data: contacts,
-    })
+    return ResponseService.success(response, 'Get All Contacts', contacts)
   }
 
   /**
@@ -35,11 +30,7 @@ export default class ContactsController {
     const contact = await Contact.create(validatedData)
     contact.userId = Number(auth.user?.id)
     contact.save()
-    return response.created({
-      message: 'Create Contact Success',
-      status_code: 201,
-      data: contact,
-    })
+    return ResponseService.created(response, 'Create Contact Success', contact)
   }
 
   /**
@@ -49,15 +40,9 @@ export default class ContactsController {
     const userId = Number(auth.user?.id)
     const contact = await Contact.query().where('id', params.id).andWhere('user_id', userId).first()
     if (!contact) {
-      response.notFound({
-        message: 'Contact Not Found',
-        data: null,
-      })
+      return ResponseService.notFound(response, 'Contact Not Found')
     }
-    return response.ok({
-      message: 'success',
-      data: contact,
-    })
+    return ResponseService.success(response, 'Get Detail Contact', contact)
   }
   /**
    * Edit individual record
@@ -73,17 +58,11 @@ export default class ContactsController {
     const validatedData = await updateContact.validate(data)
     const contact = await Contact.query().where('id', params.id).andWhere('user_id', userId).first()
     if (!contact) {
-      return response.notFound({
-        message: 'Contact Not Found',
-        data: null,
-      })
+      return ResponseService.notFound(response, 'Contact Not Found')
     }
     contact.merge(validatedData)
     await contact.save()
-    return response.ok({
-      message: 'success',
-      data: contact,
-    })
+    return ResponseService.success(response, 'Update Contact Updated', contact)
   }
 
   /**
@@ -93,14 +72,9 @@ export default class ContactsController {
     const userId = Number(auth.user?.id)
     const contact = await Contact.query().where('id', params.id).andWhere('user_id', userId).first()
     if (!contact) {
-      return response.notFound({
-        message: 'Contact Not Found',
-        data: null,
-      })
+      return ResponseService.notFound(response, 'Contact Not Found')
     }
     await contact.delete()
-    return response.ok({
-      message: 'success',
-    })
+    return ResponseService.success(response, 'Delete Contact Success')
   }
 }
