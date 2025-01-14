@@ -43,7 +43,10 @@ export default class UsersController {
     })
   }
   public async get({ auth, response }: HttpContext) {
-    const user = auth.user
+    const userId = auth.user?.id
+    const user = await User.find(userId)
+    await user?.load('contacts')
+
     return response.ok({
       message: 'Success',
       status_code: '200',
