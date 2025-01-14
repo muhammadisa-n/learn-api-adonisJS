@@ -56,7 +56,6 @@ export default class UsersController {
   public async logout({ auth, response }: HttpContext) {
     const userId = auth.user?.id
     const user = await User.findOrFail(userId)
-
     await User.accessTokens.delete(user, user.id)
     await db.from('auth_access_tokens').where('tokenable_id', user.id).delete()
     return response.ok({
